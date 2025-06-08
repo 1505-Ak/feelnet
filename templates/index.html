@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+
+{% block title %}feelnet - AI-Powered Sentiment Analysis{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-brain brain-icon"></i>
+                    feelnet
+                </h1>
+                <p class="lead mb-4">
+                    AI-powered sentiment analysis tool that extracts and classifies public opinions 
+                    from online reviews and survey responses into positive, negative, or neutral categories.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="#analyze" class="btn btn-light btn-lg">
+                        <i class="fas fa-play"></i> Try It Now
+                    </a>
+                    <a href="{{ url_for('scrape_reviews') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-spider"></i> Scrape Reviews
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="position-relative">
+                    <i class="fas fa-comments" style="font-size: 8rem; opacity: 0.3;"></i>
+                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                        <div class="bg-white rounded-circle p-4 shadow">
+                            <i class="fas fa-brain text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="display-5 fw-bold mb-3">Powerful Features</h2>
+                <p class="lead text-muted">Everything you need for comprehensive sentiment analysis</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h5 class="card-title">Multi-Method Analysis</h5>
+                        <p class="card-text">
+                            Combines VADER, TextBlob, and Transformer models for maximum accuracy
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-globe feature-icon"></i>
+                        <h5 class="card-title">Multi-Platform Support</h5>
+                        <p class="card-text">
+                            Scrape reviews from Amazon, IMDb, TripAdvisor and more platforms
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-bolt feature-icon"></i>
+                        <h5 class="card-title">Real-Time Processing</h5>
+                        <p class="card-text">
+                            Instant sentiment analysis with processing speeds of 1000+ reviews per minute
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-code feature-icon"></i>
+                        <h5 class="card-title">REST API</h5>
+                        <p class="card-text">
+                            Easy integration with your applications via our comprehensive API
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-chart-bar feature-icon"></i>
+                        <h5 class="card-title">Analytics Dashboard</h5>
+                        <p class="card-text">
+                            Visualize sentiment trends and insights with interactive charts
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-database feature-icon"></i>
+                        <h5 class="card-title">Analysis History</h5>
+                        <p class="card-text">
+                            Track and review all your previous sentiment analysis results
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Analysis Form Section -->
+<section id="analyze" class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <h3 class="card-title text-center mb-4">
+                            <i class="fas fa-brain text-primary"></i>
+                            Analyze Text Sentiment
+                        </h3>
+                        
+                        <form method="POST" action="{{ url_for('analyze_text') }}">
+                            <div class="mb-3">
+                                <label for="text" class="form-label">Enter text to analyze:</label>
+                                <textarea 
+                                    class="form-control" 
+                                    id="text" 
+                                    name="text" 
+                                    rows="5" 
+                                    placeholder="Enter any text here... reviews, comments, feedback, etc."
+                                    required
+                                ></textarea>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    Enter any text and we'll analyze its sentiment using AI models
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="method" class="form-label">Analysis Method:</label>
+                                <select class="form-select" id="method" name="method">
+                                    <option value="ensemble" selected>Ensemble (Recommended)</option>
+                                    <option value="vader">VADER</option>
+                                    <option value="textblob">TextBlob</option>
+                                    <option value="transformer">Transformer</option>
+                                </select>
+                                <div class="form-text">
+                                    Ensemble combines multiple methods for best accuracy
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-magic"></i>
+                                    Analyze Sentiment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- API Example Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h3 class="mb-4">
+                    <i class="fas fa-code text-primary"></i>
+                    API Usage Example
+                </h3>
+                <p class="lead">Integrate feelnet into your applications with our simple REST API:</p>
+                
+                <div class="bg-dark text-light p-4 rounded">
+                    <small class="text-muted"># POST /api/analyze</small>
+                    <pre class="text-light mb-0"><code>curl -X POST http://localhost:5000/api/analyze \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "This product is amazing!",
+    "method": "ensemble"
+  }'</code></pre>
+                </div>
+                
+                <div class="mt-3">
+                    <a href="/api/health" class="btn btn-outline-primary me-2" target="_blank">
+                        <i class="fas fa-heartbeat"></i> Test API
+                    </a>
+                    <a href="https://github.com/yourusername/feelnet#api-usage" class="btn btn-outline-secondary" target="_blank">
+                        <i class="fas fa-book"></i> Full Documentation
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <h3 class="mb-4">
+                    <i class="fas fa-chart-pie text-primary"></i>
+                    Real-Time Analytics
+                </h3>
+                <p class="lead">Monitor sentiment trends across your data:</p>
+                
+                <!-- Sample Chart -->
+                <div class="card">
+                    <div class="card-body">
+                        <canvas id="sampleChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-chart-bar"></i> View Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Supported Platforms Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-12 mb-5">
+                <h3 class="display-6 fw-bold">Supported Platforms</h3>
+                <p class="lead text-muted">Extract reviews from popular platforms</p>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-2 col-6 text-center mb-4">
+                <div class="p-3">
+                    <i class="fab fa-amazon" style="font-size: 3rem; color: #FF9900;"></i>
+                    <h6 class="mt-2">Amazon</h6>
+                </div>
+            </div>
+            <div class="col-md-2 col-6 text-center mb-4">
+                <div class="p-3">
+                    <i class="fas fa-film" style="font-size: 3rem; color: #F5C518;"></i>
+                    <h6 class="mt-2">IMDb</h6>
+                </div>
+            </div>
+            <div class="col-md-2 col-6 text-center mb-4">
+                <div class="p-3">
+                    <i class="fas fa-map-marker-alt" style="font-size: 3rem; color: #00AA6C;"></i>
+                    <h6 class="mt-2">TripAdvisor</h6>
+                </div>
+            </div>
+            <div class="col-md-2 col-6 text-center mb-4">
+                <div class="p-3">
+                    <i class="fas fa-plus-circle" style="font-size: 3rem; color: #6c757d;"></i>
+                    <h6 class="mt-2">More Coming</h6>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <a href="{{ url_for('scrape_reviews') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-spider"></i>
+                    Start Scraping Reviews
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Sample chart for demonstration
+const ctx = document.getElementById('sampleChart').getContext('2d');
+const sampleChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Positive', 'Negative', 'Neutral'],
+        datasets: [{
+            data: [65, 20, 15],
+            backgroundColor: [
+                'rgba(39, 174, 96, 0.8)',
+                'rgba(231, 76, 60, 0.8)',
+                'rgba(243, 156, 18, 0.8)'
+            ],
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            },
+            title: {
+                display: true,
+                text: 'Sample Sentiment Distribution'
+            }
+        }
+    }
+});
+
+// Auto-resize textarea
+document.getElementById('text').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+});
+</script>
+{% endblock %} 

@@ -13,7 +13,7 @@ A comprehensive sentiment analysis tool that automatically extracts and classifi
 
 ## 🚀 Quick Start
 
-### Installation
+### Automated Setup (Recommended)
 
 ```bash
 # Clone the repository
@@ -24,28 +24,57 @@ cd feelnet
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
+# Run automated setup
+python setup.py
+```
+
+### Manual Installation
+
+```bash
 # Install dependencies
 pip install -r requirements.txt
 
 # Download NLTK data
-python -c "import nltk; nltk.download('all')"
+python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('wordnet'); nltk.download('vader_lexicon')"
+
+# Test installation
+python test_installation.py
+
+# Create configuration file
+cp config.env.example .env
 ```
 
 ### Basic Usage
 
 ```python
-from feelnet import SentimentAnalyzer
+from src import SentimentAnalyzer
 
 # Initialize analyzer
 analyzer = SentimentAnalyzer()
 
 # Analyze single text
 result = analyzer.analyze("I love this product! It's amazing!")
-print(result)  # {'sentiment': 'positive', 'confidence': 0.95, 'scores': {...}}
+print(f"Sentiment: {result.sentiment.value}")
+print(f"Confidence: {result.confidence:.2f}")
+print(f"Scores: {result.scores}")
 
 # Analyze multiple texts
 texts = ["Great service!", "Terrible experience", "It's okay"]
 results = analyzer.analyze_batch(texts)
+
+# Get statistics
+stats = analyzer.get_statistics(results)
+print(f"Sentiment distribution: {stats['sentiment_distribution']}")
+```
+
+### Quick Demo
+
+```bash
+# Run the interactive demo
+python demo.py
+
+# Test the installation
+python test_installation.py
 ```
 
 ### Web Interface

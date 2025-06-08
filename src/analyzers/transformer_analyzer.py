@@ -6,7 +6,13 @@ Provides state-of-the-art accuracy for sentiment classification.
 from typing import Dict, Optional
 import logging
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
-from ..analyzers.sentiment_analyzer import SentimentLabel
+from enum import Enum
+
+class SentimentLabel(Enum):
+    """Sentiment classification labels."""
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    NEUTRAL = "neutral"
 
 logger = logging.getLogger(__name__)
 

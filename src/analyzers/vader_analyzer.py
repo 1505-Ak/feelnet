@@ -5,7 +5,13 @@ Particularly good for social media text and informal language.
 
 from typing import Dict
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from ..analyzers.sentiment_analyzer import SentimentLabel
+from enum import Enum
+
+class SentimentLabel(Enum):
+    """Sentiment classification labels."""
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    NEUTRAL = "neutral"
 
 
 class VaderAnalyzer:

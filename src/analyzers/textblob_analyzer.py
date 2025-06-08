@@ -5,7 +5,13 @@ Uses TextBlob's built-in sentiment analysis which is based on movie reviews.
 
 from typing import Dict
 from textblob import TextBlob
-from ..analyzers.sentiment_analyzer import SentimentLabel
+from enum import Enum
+
+class SentimentLabel(Enum):
+    """Sentiment classification labels."""
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    NEUTRAL = "neutral"
 
 
 class TextBlobAnalyzer:

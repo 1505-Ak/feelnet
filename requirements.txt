@@ -1,0 +1,37 @@
+# Core ML and NLP libraries
+pandas>=1.5.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+nltk>=3.8
+textblob>=0.17.1
+vaderSentiment>=3.3.2
+transformers>=4.21.0
+torch>=2.0.0
+
+# Web scraping
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+selenium>=4.15.0
+scrapy>=2.11.0
+
+# Web framework and API
+flask>=2.3.0
+flask-cors>=4.0.0
+flask-restful>=0.3.10
+
+# Data visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.15.0
+
+# Database
+sqlite3
+
+# Configuration and utilities
+python-dotenv>=1.0.0
+tqdm>=4.65.0
+joblib>=1.3.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0 

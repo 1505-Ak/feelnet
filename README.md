@@ -142,6 +142,5 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 📞 Support
 
-- 📧 Email: support@feelnet.com
-- 📖 Documentation: [docs.feelnet.com](https://docs.feelnet.com)
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/feelnet/issues) 
+- 📧 Email: anulomekishore15@gmail.com
+  

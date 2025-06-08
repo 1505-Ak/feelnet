@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - feelnet{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">📊 Analytics Dashboard</h4>
+                    <small>Overview of your sentiment analysis activity</small>
+                </div>
+                <div class="card-body">
+                    {% if stats %}
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="card text-center border-primary">
+                                    <div class="card-body">
+                                        <h2 class="text-primary">{{ stats.total_analyses }}</h2>
+                                        <p class="card-text">Total Analyses</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-center border-success">
+                                    <div class="card-body">
+                                        <h2 class="text-success">{{ stats.positive_count }}</h2>
+                                        <p class="card-text">Positive Results</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-center border-danger">
+                                    <div class="card-body">
+                                        <h2 class="text-danger">{{ stats.negative_count }}</h2>
+                                        <p class="card-text">Negative Results</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-center border-warning">
+                                    <div class="card-body">
+                                        <h2 class="text-warning">{{ stats.neutral_count }}</h2>
+                                        <p class="card-text">Neutral Results</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Sentiment Distribution</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="sentimentChart" width="400" height="300"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Analysis Timeline</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="timelineChart" width="400" height="300"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Analysis Summary</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="text-center">
+                                                    <h6>Average Confidence</h6>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar bg-info" role="progressbar" 
+                                                             style="width: {{ stats.avg_confidence * 100 }}%">
+                                                            {{ "%.1f" | format(stats.avg_confidence * 100) }}%
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="text-center">
+                                                    <h6>Most Common Sentiment</h6>
+                                                    {% if stats.most_common == 'positive' %}
+                                                        <span class="badge bg-success fs-6">Positive</span>
+                                                    {% elif stats.most_common == 'negative' %}
+                                                        <span class="badge bg-danger fs-6">Negative</span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning fs-6">Neutral</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="text-center">
+                                                    <h6>This Week</h6>
+                                                    <p class="mb-0">{{ stats.this_week_count }} analyses</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-chart-bar text-muted fa-3x mb-3"></i>
+                            <h5 class="text-muted">No data available yet</h5>
+                            <p class="text-muted">Start analyzing some text to see your analytics here!</p>
+                            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Start Analyzing
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if stats %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Sentiment Distribution Pie Chart
+    const sentimentCtx = document.getElementById('sentimentChart').getContext('2d');
+    new Chart(sentimentCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Positive', 'Negative', 'Neutral'],
+            datasets: [{
+                data: [{{ stats.positive_count }}, {{ stats.negative_count }}, {{ stats.neutral_count }}],
+                backgroundColor: ['#28a745', '#dc3545', '#ffc107'],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+    
+    // Timeline Chart (placeholder - would need historical data)
+    const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+    new Chart(timelineCtx, {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Analyses per Day',
+                data: [2, 5, 3, 8, 4, 6, 7],
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endif %}
+{% endblock %} 

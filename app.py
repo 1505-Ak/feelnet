@@ -152,12 +152,15 @@ def analyze_text():
         return redirect(url_for('index'))
 
 
-@app.route('/scrape', methods=['GET', 'POST'])
+@app.route('/scrape')
 def scrape_reviews():
     """Scrape and analyze reviews from supported platforms."""
-    if request.method == 'GET':
-        supported_platforms = scraper_factory.get_supported_platforms()
-        return render_template('scrape.html', platforms=supported_platforms)
+    supported_platforms = scraper_factory.get_supported_platforms()
+    return render_template('scrape.html', platforms=supported_platforms)
+
+@app.route('/scrape/submit', methods=['POST'])
+def scrape_submit():
+    """Process scraping form submission."""
     
     try:
         url = request.form.get('url', '').strip()
@@ -271,10 +274,19 @@ def dashboard():
         
         conn.close()
         
-        return render_template('dashboard.html', 
-                             sentiment_dist=sentiment_dist,
-                             method_dist=method_dist,
-                             activity=activity)
+        # Calculate stats for template
+        total_analyses = sum(sentiment_dist.values()) if sentiment_dist else 0
+        stats = {
+            'total_analyses': total_analyses,
+            'positive_count': sentiment_dist.get('positive', 0),
+            'negative_count': sentiment_dist.get('negative', 0),
+            'neutral_count': sentiment_dist.get('neutral', 0),
+            'avg_confidence': 0.65,  # Placeholder
+            'most_common': max(sentiment_dist, key=sentiment_dist.get) if sentiment_dist else 'neutral',
+            'this_week_count': total_analyses  # Placeholder
+        }
+        
+        return render_template('dashboard.html', stats=stats)
         
     except Exception as e:
         logger.error(f"Error loading dashboard: {e}")

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Web Scraping - feelnet{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">🕷️ Web Scraping Tool</h4>
+                    <small>Extract reviews from supported platforms</small>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('scrape_submit') }}">
+                        <div class="mb-3">
+                            <label for="url" class="form-label">Product/Page URL</label>
+                            <input type="url" class="form-control" id="url" name="url" required
+                                   placeholder="Enter URL (e.g., https://amazon.com/product/...)">
+                            <div class="form-text">
+                                <i class="fas fa-info-circle"></i>
+                                Supported platforms: Amazon, IMDb, TripAdvisor
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="max_reviews" class="form-label">Maximum Reviews</label>
+                                    <select class="form-select" id="max_reviews" name="max_reviews">
+                                        <option value="10">10 reviews</option>
+                                        <option value="25" selected>25 reviews</option>
+                                        <option value="50">50 reviews</option>
+                                        <option value="100">100 reviews</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="analyze_sentiment" class="form-label">Analysis Options</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="analyze_sentiment" 
+                                               name="analyze_sentiment" checked>
+                                        <label class="form-check-label" for="analyze_sentiment">
+                                            Analyze sentiment of scraped reviews
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-info btn-lg">
+                                <i class="fas fa-spider"></i> Start Scraping
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🌐 Supported Platforms</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for platform in platforms %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card border-primary">
+                                    <div class="card-body text-center">
+                                        {% if platform == 'amazon' %}
+                                            <i class="fab fa-amazon text-warning fa-2x mb-2"></i>
+                                            <h6>Amazon</h6>
+                                            <small class="text-muted">Product reviews</small>
+                                        {% elif platform == 'imdb' %}
+                                            <i class="fab fa-imdb text-warning fa-2x mb-2"></i>
+                                            <h6>IMDb</h6>
+                                            <small class="text-muted">Movie reviews</small>
+                                        {% elif platform == 'tripadvisor' %}
+                                            <i class="fas fa-plane text-success fa-2x mb-2"></i>
+                                            <h6>TripAdvisor</h6>
+                                            <small class="text-muted">Travel reviews</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

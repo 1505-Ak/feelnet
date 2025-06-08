@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Results - feelnet{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">📊 Sentiment Analysis Results</h4>
+                </div>
+                <div class="card-body">
+                    {% if result %}
+                        <div class="mb-3">
+                            <h5>Original Text:</h5>
+                            <div class="alert alert-light">
+                                {{ result.text[:200] }}{% if result.text|length > 200 %}...{% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-body text-center">
+                                        {% if result.label.value == 'positive' %}
+                                            <i class="fas fa-smile text-success fa-3x mb-2"></i>
+                                            <h5 class="text-success">Positive</h5>
+                                        {% elif result.label.value == 'negative' %}
+                                            <i class="fas fa-frown text-danger fa-3x mb-2"></i>
+                                            <h5 class="text-danger">Negative</h5>
+                                        {% else %}
+                                            <i class="fas fa-meh text-warning fa-3x mb-2"></i>
+                                            <h5 class="text-warning">Neutral</h5>
+                                        {% endif %}
+                                        <p class="mb-0">Confidence: {{ "%.1f" | format(result.confidence * 100) }}%</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h6>Detailed Scores:</h6>
+                                        <div class="progress mb-2">
+                                            <div class="progress-bar bg-success" role="progressbar" 
+                                                 style="width: {{ result.scores.positive * 100 }}%">
+                                                Positive: {{ "%.1f" | format(result.scores.positive * 100) }}%
+                                            </div>
+                                        </div>
+                                        <div class="progress mb-2">
+                                            <div class="progress-bar bg-danger" role="progressbar" 
+                                                 style="width: {{ result.scores.negative * 100 }}%">
+                                                Negative: {{ "%.1f" | format(result.scores.negative * 100) }}%
+                                            </div>
+                                        </div>
+                                        <div class="progress mb-2">
+                                            <div class="progress-bar bg-warning" role="progressbar" 
+                                                 style="width: {{ result.scores.neutral * 100 }}%">
+                                                Neutral: {{ "%.1f" | format(result.scores.neutral * 100) }}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if result.processing_time %}
+                        <div class="text-muted text-center">
+                            <small>Analysis completed in {{ "%.3f" | format(result.processing_time) }} seconds</small>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            No analysis results available.
+                        </div>
+                    {% endif %}
+                    
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left"></i> Analyze Another Text
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

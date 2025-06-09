@@ -201,8 +201,26 @@ def analysis_history():
             LIMIT 100
         ''')
         
-        history = cursor.fetchall()
+        rows = cursor.fetchall()
         conn.close()
+        
+        # Convert rows to simple objects so Jinja can use dot notation
+        import types, json as _json
+        history = []
+        for row in rows:
+            obj_dict = {
+                'id': row[0],
+                'text': row[1],
+                'sentiment': row[2],
+                'confidence': row[3],
+                'scores': _json.loads(row[4]) if row[4] else {},
+                'method': row[5],
+                'processing_time': row[6],
+                'timestamp': row[7],
+                'source_url': row[8],
+                'platform': row[9],
+            }
+            history.append(types.SimpleNamespace(**obj_dict))
         
         return render_template('history.html', history=history)
         

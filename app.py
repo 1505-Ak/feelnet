@@ -160,59 +160,32 @@ def scrape_reviews():
 
 @app.route('/scrape/submit', methods=['POST'])
 def scrape_submit():
-    """Process scraping form submission."""
-    
-    try:
-        url = request.form.get('url', '').strip()
-        max_reviews = int(request.form.get('max_reviews', 50))
-        
-        if not url:
-            flash('Please enter a URL to scrape.', 'error')
-            return redirect(url_for('scrape_reviews'))
-        
-        # Get appropriate scraper
-        scraper = scraper_factory.get_scraper_by_url(url)
-        if not scraper:
-            flash('URL not supported. Please check supported platforms.', 'error')
-            return redirect(url_for('scrape_reviews'))
-        
-        # Scrape reviews
-        reviews = scraper.scrape_reviews(url, max_reviews=max_reviews)
-        
-        if not reviews:
-            flash('No reviews found or unable to scrape from the provided URL.', 'warning')
-            return redirect(url_for('scrape_reviews'))
-        
-        # Analyze sentiment of each review
-        results = []
-        for review in reviews:
-            try:
-                result = analyzer.analyze(review.text)
-                save_analysis_result(result, source_url=url, platform=review.platform)
-                
-                results.append({
-                    'review': review,
-                    'sentiment': result
-                })
-            except Exception as e:
-                logger.error(f"Error analyzing review: {e}")
-                continue
-        
-        # Calculate statistics
-        if results:
-            stats = analyzer.get_statistics([r['sentiment'] for r in results])
-            return render_template('scrape_results.html', 
-                                 results=results, 
-                                 stats=stats, 
-                                 url=url)
-        else:
-            flash('Unable to analyze any reviews.', 'error')
-            return redirect(url_for('scrape_reviews'))
-            
-    except Exception as e:
-        logger.error(f"Error in scraping: {e}")
-        flash(f'Error scraping reviews: {str(e)}', 'error')
+    """Handle scraping form submission and display results."""
+    url = request.form.get('url', '').strip()
+    max_reviews = int(request.form.get('max_reviews', 25))
+    analyze_flag = bool(request.form.get('analyze_sentiment'))
+    if not url:
+        flash('Please provide a URL.', 'error')
         return redirect(url_for('scrape_reviews'))
+
+    scraper = scraper_factory.get_scraper_by_url(url)
+    if scraper is None:
+        flash('URL not supported for scraping.', 'error')
+        return redirect(url_for('scrape_reviews'))
+    try:
+        reviews = scraper.scrape_reviews(url, max_reviews=max_reviews)
+    except Exception as e:
+        logger.error(f"Scraping failed: {e}")
+        flash('Scraping failed. Please try again later.', 'error')
+        return redirect(url_for('scrape_reviews'))
+
+    results = []
+    if analyze_flag:
+        for rev in reviews:
+            res = analyzer.analyze(rev.text)
+            results.append({'review': rev, 'sentiment': res})
+    stats = analyzer.get_statistics([r['sentiment'] for r in results]) if results else {}
+    return render_template('scrape_results.html', url=url, results=results, stats=stats)
 
 
 @app.route('/history')

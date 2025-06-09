@@ -23,10 +23,10 @@
                             <div class="col-md-6">
                                 <div class="card mb-3">
                                     <div class="card-body text-center">
-                                        {% if result.label.value == 'positive' %}
+                                        {% if result.sentiment.value == 'positive' %}
                                             <i class="fas fa-smile text-success fa-3x mb-2"></i>
                                             <h5 class="text-success">Positive</h5>
-                                        {% elif result.label.value == 'negative' %}
+                                        {% elif result.sentiment.value == 'negative' %}
                                             <i class="fas fa-frown text-danger fa-3x mb-2"></i>
                                             <h5 class="text-danger">Negative</h5>
                                         {% else %}

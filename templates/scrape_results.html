@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Scrape Results - feelnet{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-3">🕷️ Scraped Reviews</h3>
+    <p class="text-muted">Source URL: <a href="{{ url }}" target="_blank">{{ url }}</a></p>
+    {% if results %}
+        <div class="list-group">
+            {% for item in results %}
+            <div class="list-group-item mb-2">
+                <p>{{ item.review.text }}</p>
+                <div>
+                    {% if item.sentiment.sentiment.value == 'positive' %}
+                        <span class="badge bg-success">Positive</span>
+                    {% elif item.sentiment.sentiment.value == 'negative' %}
+                        <span class="badge bg-danger">Negative</span>
+                    {% else %}
+                        <span class="badge bg-warning">Neutral</span>
+                    {% endif %}
+                    <small class="ms-2">Confidence: {{ "%.1f" | format(item.sentiment.confidence * 100) }}%</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">No reviews analyzed.</div>
+    {% endif %}
+{% endblock %} 

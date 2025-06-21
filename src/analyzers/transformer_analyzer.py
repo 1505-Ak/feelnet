@@ -7,6 +7,9 @@ from typing import Dict, Optional
 import logging
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
 from enum import Enum
+import os
+
+os.environ["TRANSFORMERS_NO_TF"] = "1"
 
 class SentimentLabel(Enum):
     """Sentiment classification labels."""
@@ -25,7 +28,7 @@ class TransformerAnalyzer:
     Default model is optimized for English text sentiment classification.
     """
     
-    def __init__(self, model_name: str = "cardiffnlp/twitter-roberta-base-sentiment-latest"):
+    def __init__(self, model_name: str = "distilbert-base-uncased-finetuned-sst-2-english"):
         """
         Initialize transformer analyzer.
         

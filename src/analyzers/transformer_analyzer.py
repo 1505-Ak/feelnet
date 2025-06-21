@@ -4,11 +4,11 @@ Provides state-of-the-art accuracy for sentiment classification.
 """
 
 import os
-os.environ["TRANSFORMERS_NO_TF"] = "1"
+os.environ.setdefault("TRANSFORMERS_NO_TF","1")
+os.environ.setdefault("TRANSFORMERS_NO_FLAX","1")
 
 from typing import Dict, Optional
 import logging
-from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
 from enum import Enum
 
 class SentimentLabel(Enum):
@@ -42,6 +42,7 @@ class TransformerAnalyzer:
     def _initialize_model(self):
         """Initialize the transformer model pipeline."""
         try:
+            from transformers import pipeline  # lazy import
             logger.info(f"Loading transformer model: {self.model_name}")
             self.pipeline = pipeline(
                 "sentiment-analysis",

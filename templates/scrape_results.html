@@ -20,6 +20,7 @@
                         <span class="badge bg-warning">Neutral</span>
                     {% endif %}
                     <small class="ms-2">Confidence: {{ "%.1f" | format(item.sentiment.confidence * 100) }}%</small>
+                    <small class="ms-2 text-muted">Scores: P={{"%.2f"|format(item.sentiment.scores.positive)}}, N={{"%.2f"|format(item.sentiment.scores.negative)}}, U={{"%.2f"|format(item.sentiment.scores.neutral)}}</small>
                 </div>
             </div>
             {% endfor %}

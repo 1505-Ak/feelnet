@@ -6,10 +6,43 @@ import re
 from typing import List, Dict
 from bs4 import BeautifulSoup
 import logging
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 from .base_scraper import BaseScraper, ReviewData
 
 logger = logging.getLogger(__name__)
+
+
+class _SeleniumHelper:
+    """Lightweight helper to get rendered HTML via headless Chrome."""
+
+    _driver = None  # cached driver
+
+    @classmethod
+    def get_html(cls, url: str, timeout: int = 30) -> str:
+        if cls._driver is None:
+            opts = Options()
+            opts.add_argument("--headless")
+            opts.add_argument("--disable-gpu")
+            opts.add_argument("--no-sandbox")
+            opts.add_argument("--disable-dev-shm-usage")
+            cls._driver = webdriver.Chrome(ChromeDriverManager().install(), options=opts)
+            cls._driver.set_page_load_timeout(timeout)
+
+        cls._driver.get(url)
+        html = cls._driver.page_source
+        return html
+
+    @classmethod
+    def shutdown(cls):
+        if cls._driver:
+            try:
+                cls._driver.quit()
+            except Exception:
+                pass
+            cls._driver = None
 
 
 class AmazonScraper(BaseScraper):
@@ -58,11 +91,14 @@ class AmazonScraper(BaseScraper):
             while len(reviews) < max_reviews and page <= 10:  # Limit to 10 pages
                 page_url = f"{reviews_url}&pageNumber={page}"
                 
-                response = self._make_request(page_url)
-                if not response:
+                # Use rendered HTML via Selenium to bypass dynamic loading
+                try:
+                    html = _SeleniumHelper.get_html(page_url)
+                except Exception as e:
+                    logger.error(f"Selenium render error: {e}")
                     break
-                
-                soup = BeautifulSoup(response.content, 'html.parser')
+
+                soup = BeautifulSoup(html, 'html.parser')
                 page_reviews = self._extract_reviews_from_page(soup, url)
                 
                 if not page_reviews:

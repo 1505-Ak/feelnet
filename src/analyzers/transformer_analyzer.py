@@ -3,13 +3,13 @@ Transformer-based sentiment analyzer using pre-trained models.
 Provides state-of-the-art accuracy for sentiment classification.
 """
 
+import os
+os.environ["TRANSFORMERS_NO_TF"] = "1"
+
 from typing import Dict, Optional
 import logging
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
 from enum import Enum
-import os
-
-os.environ["TRANSFORMERS_NO_TF"] = "1"
 
 class SentimentLabel(Enum):
     """Sentiment classification labels."""
